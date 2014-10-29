@@ -15,7 +15,7 @@ class UserFactory(NDBFactory):
     name = fuzzy.FuzzyText()
     gender = fuzzy.FuzzyChoice(['M', 'F'])
 
-class ArticleFactory(FromSessionFactory):
+class ArticleFactory(NDBFactory):
     class Meta:
         model = Article
 
