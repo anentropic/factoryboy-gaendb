@@ -68,34 +68,34 @@ class NDBFactoryMetaClass(FactoryMetaClass):
     '''
     Needed so we can auto generate a key = KeyAttribute(cls) onto the factory.
 
-    We also add _key_id and _key_parent attributes to the factory allowing you
+    We also add `id` and `parent` attributes to the factory allowing you
     to pass those in the kwargs to create() or build() to specify id and parent
-    of the auto-generated ndb key.
+    of the auto-generated ndb key (same signature as ndb Model constructor).
     '''
     def __new__(meta_cls, class_name, bases, attrs):
         new_cls = super(NDBFactoryMetaClass, meta_cls).__new__(meta_cls,
                                                                class_name,
                                                                bases, attrs)
-        # these SelfAttributes allow us to specify _key_id and _key_parent for
+        # these SelfAttributes allow us to specify `id` and `parent` for
         # key when generating the instance
         key_attr = KeyAttribute(
             new_cls,
-            _parent=factory.SelfAttribute('_key_parent', default=None),
-            _id=factory.SelfAttribute('_key_id'),
+            _parent=factory.SelfAttribute('parent', default=None),
+            _id=factory.SelfAttribute('id'),
         )
         new_cls.key = key_attr
         new_cls._meta.declarations['key'] = key_attr
 
         key_id_attr = factory.Sequence(lambda seq: seq)
-        new_cls._key_id = key_id_attr
-        new_cls._meta.declarations['_key_id'] = key_id_attr
-        if '_key_id' not in new_cls._meta.exclude:
-            new_cls._meta.exclude += ('_key_id',)
+        new_cls.id = key_id_attr
+        new_cls._meta.declarations['id'] = key_id_attr
+        if 'id' not in new_cls._meta.exclude:
+            new_cls._meta.exclude += ('id',)
 
-        new_cls._key_parent = None
-        new_cls._meta.declarations['_key_parent'] = None
-        if '_key_parent' not in new_cls._meta.exclude:
-            new_cls._meta.exclude += ('_key_parent',)
+        new_cls.parent = None
+        new_cls._meta.declarations['parent'] = None
+        if 'parent' not in new_cls._meta.exclude:
+            new_cls._meta.exclude += ('parent',)
 
         return new_cls
 
