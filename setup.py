@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='factoryboy-gaendb',
-    version='0.1.0',
+    version='0.1.1',
     packages=[
         'gaendb',
     ],

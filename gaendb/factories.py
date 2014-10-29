@@ -38,40 +38,51 @@ class KeyProxy(ndb.Key):
 
 
 class KeyAttribute(factory.LazyAttributeSequence):
-    """
+    '''
     A factory_boy LazyAttributeSequence that acts like an ndb.KeyProperty
-    """
+    '''
     def __init__(self, kind_factory, _parent=None, _id=None, type=int):
         def key_func(obj, seq):
             if hasattr(_id, 'evaluate'):
-                value = _id.evaluate(seq, obj, None)
-                if value is None:
-                    value = seq
+                key_id = _id.evaluate(seq, obj, None)
+                if key_id is None:
+                    key_id = seq
             else:
-                value = seq
+                key_id = seq
+
+            if hasattr(_parent, 'evaluate'):
+                key_parent = _parent.evaluate(seq, obj, None)
+            else:
+                key_parent = _parent
 
             return KeyProxy(
                 kind_factory,
                 kind_factory._get_model_class().__name__,
-                value,
-                parent=_parent
+                key_id,
+                parent=key_parent
             )
         super(KeyAttribute, self).__init__(function=key_func, type=type)
 
 
 class NDBFactoryMetaClass(FactoryMetaClass):
-    """
+    '''
     Needed so we can auto generate a key = KeyAttribute(cls) onto the factory.
-    We also add a _key_id attribute to the factory allowing you to pass that in
-    the kwargs to create() or build() to specify id of the auto-generated key.
-    """
+
+    We also add _key_id and _key_parent attributes to the factory allowing you
+    to pass those in the kwargs to create() or build() to specify id and parent
+    of the auto-generated ndb key.
+    '''
     def __new__(meta_cls, class_name, bases, attrs):
         new_cls = super(NDBFactoryMetaClass, meta_cls).__new__(meta_cls,
                                                                class_name,
                                                                bases, attrs)
-        # this SelfAttribute allows us to specify _key_id  and _parent of key
-        # when generating the instance
-        key_attr = KeyAttribute(new_cls, _id=factory.SelfAttribute('_key_id'))
+        # these SelfAttributes allow us to specify _key_id and _key_parent for
+        # key when generating the instance
+        key_attr = KeyAttribute(
+            new_cls,
+            _parent=factory.SelfAttribute('_key_parent', default=None),
+            _id=factory.SelfAttribute('_key_id'),
+        )
         new_cls.key = key_attr
         new_cls._meta.declarations['key'] = key_attr
 
@@ -80,6 +91,11 @@ class NDBFactoryMetaClass(FactoryMetaClass):
         new_cls._meta.declarations['_key_id'] = key_id_attr
         if '_key_id' not in new_cls._meta.exclude:
             new_cls._meta.exclude += ('_key_id',)
+
+        new_cls._key_parent = None
+        new_cls._meta.declarations['_key_parent'] = None
+        if '_key_parent' not in new_cls._meta.exclude:
+            new_cls._meta.exclude += ('_key_parent',)
 
         return new_cls
 
