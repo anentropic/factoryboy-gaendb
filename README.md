@@ -5,7 +5,7 @@ Factoryboy base factories and helpers for Google App Engine ndb models
 
 Example:
 
-```
+```python
 from gaendb.factories import NDBFactory, KeyAttribute
 
 class UserFactory(NDBFactory):
