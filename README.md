@@ -1,7 +1,7 @@
 factoryboy-gaendb
 =================
 
-Factoryboy base factories and helpers for Google App Engine ndb models
+[Factoryboy](http://factoryboy.readthedocs.org/en/latest/) base factories and helpers for Google App Engine ndb models
 
 Example:
 
