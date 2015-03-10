@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='factoryboy-gaendb',
-    version='0.1.4',
+    version='0.1.5',
     packages=[
         'gaendb',
     ],
@@ -13,7 +13,6 @@ setup(
     author_email="ego@anentropic.com",
     url="https://github.com/anentropic/factoryboy-gaendb",
     install_requires=[
-        "google-appengine",
         "factory_boy",
     ],
 )
