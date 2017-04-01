@@ -38,9 +38,9 @@ class KeyProxy(ndb.Key):
 
 
 class KeyAttribute(factory.LazyAttributeSequence):
-    '''
+    """
     A factory_boy LazyAttributeSequence that acts like an ndb.KeyProperty
-    '''
+    """
     def __init__(self, kind_factory, _parent=None, _id=None, type=int):
         def key_func(obj, seq):
             if hasattr(_id, 'evaluate'):
@@ -65,13 +65,13 @@ class KeyAttribute(factory.LazyAttributeSequence):
 
 
 class NDBFactoryMetaClass(FactoryMetaClass):
-    '''
+    """
     Needed so we can auto generate a key = KeyAttribute(cls) onto the factory.
 
     We also add `id` and `parent` attributes to the factory allowing you
     to pass those in the kwargs to create() or build() to specify id and parent
     of the auto-generated ndb key (same signature as ndb Model constructor).
-    '''
+    """
     def __new__(meta_cls, class_name, bases, attrs):
         new_cls = super(NDBFactoryMetaClass, meta_cls).__new__(meta_cls,
                                                                class_name,
@@ -140,7 +140,8 @@ class NDBBaseFactory(BaseFactory):
 
 NDBFactory = NDBFactoryMetaClass('NDBFactory', (NDBBaseFactory,), {
     'Meta': NDBBaseMeta,
-    '__doc__': """Factory base with build and create support.
+    '__doc__': """
+    Factory base with build and create support.
 
     Extended to support GAE NDB Model.
     """,
