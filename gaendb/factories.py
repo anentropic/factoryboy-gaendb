@@ -24,7 +24,10 @@ class KeyProxy(ndb.Key):
         self._key = ndb.Key(*args, **kwargs)
         self._kind_factory = kind_factory
 
-    def get(self, _create=False):
+    def get(self, _create=False, **ctx_options):
+        """
+        NOTE: `ctx_options` are ignored
+        """
         if _create:
             return self._kind_factory.create(key=self)
         else:
